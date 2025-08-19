@@ -3,7 +3,7 @@
 This script automates bootstrapping crystal from source code, compiling every
 intermediate compiler version to reach the latest version.
 
-Dependencies:
+## Dependencies
 
 - Essential build tools i.e. `build-essential`/`base-devel`
 - curl
