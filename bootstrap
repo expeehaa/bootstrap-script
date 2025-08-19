@@ -42,6 +42,7 @@ echo "==> Checking files"
     sha256sum -c "$files"/llvm-3.5.2.src.tar.xz.sha256
     sha256sum -c "$files"/llvm-3.9.1.src.tar.xz.sha256
     sha256sum -c "$files"/pcl-1.12.tar.gz.sha256
+    sha256sum -c "$files"/pcre-8.45.tar.gz.sha256
 
     cd "$downloads"/gems
 
@@ -124,6 +125,19 @@ test -d "$src"/llvm-3.3.src || (
 )
 
 ln -sf "$buildroot"/bin/llvm-config-3.3 "$buildroot"/bin/llvm-config
+
+echo "==> Installing PCRE 8.45"
+test -d "$src/pcre-8.45" || (
+    cd "$src"
+
+    tar xzf "$downloads/pcre-8.45.tar.gz"
+
+    cd "pcre-8.45"
+
+    maybe_with_old_cc_cxx ./configure --prefix="$buildroot"
+    make "-j$(nproc --all)"
+    make install
+)
 
 echo "==> Installing Gems"
 

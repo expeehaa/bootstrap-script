@@ -17,6 +17,7 @@ curl -L -o "$downloads"/llvm-3.3.src.tar.gz https://releases.llvm.org/3.3/llvm-3
 curl -L -o "$downloads"/llvm-3.5.2.src.tar.xz https://releases.llvm.org/3.5.2/llvm-3.5.2.src.tar.xz
 curl -L -o "$downloads"/llvm-3.9.1.src.tar.xz https://releases.llvm.org/3.9.1/llvm-3.9.1.src.tar.xz
 curl -L -o "$downloads"/pcl-1.12.tar.gz http://www.xmailserver.org/pcl-1.12.tar.gz
+curl -L -o "$downloads"/pcre-8.45.tar.gz https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz/download
 git clone --mirror https://github.com/crystal-lang/crystal.git "$downloads"/crystal.git
 
 # Gems

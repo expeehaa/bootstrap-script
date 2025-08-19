@@ -15,7 +15,6 @@ intermediate compiler version to reach the latest version.
 - autoconf
 - libtool
 - cmake
-- pcre dev package
 - zlib dev package
 - libyaml dev package
 - libunwind dev package
@@ -25,6 +24,7 @@ Additionally, the script compiles some dependencies that are unlikely to be avai
 - Ruby 1.9.3
 - Python 2.7
 - LLVM 3.x
+- pcre
 - pcl
 - libevent 2.1.10
 - openssl 1.0.2q
