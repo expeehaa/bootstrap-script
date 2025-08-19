@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-# CD to the directly this file is actually in
+# CD to the directory this file is actually in.
 cd "$(dirname "$(realpath --logical "$0")")"
 
 downloads="$(pwd)"/downloads
@@ -257,7 +257,7 @@ stage 6 72f260e00bf343d179dd2a72b5f6e699f9030739
 stage 7 90d7aad39c500fcbced6d5fba7f63098a0d24918
 stage 8 570be14b8bd422ebf68f2b4c65de8431d23014e1
 
-# addressof was renamed to pointerof in a sinle commit. This patch is just the compiler changes.
+# addressof was renamed to pointerof in a single commit. This patch is just the compiler changes.
 stage 9 6f084f00e416045a6a5de16e8a0637831e041f22 'patch -p1 < "$files"/stage9.patch'
 
 stage 10 b2cdfe57ef177f3362a977ebd80fb3eed692b465

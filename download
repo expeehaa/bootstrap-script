@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# CD to the directly this file is actually in
+# CD to the directory this file is actually in.
 cd "$(dirname "$(realpath --logical "$0")")"
 
 downloads="$(pwd)"/downloads
