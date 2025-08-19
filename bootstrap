@@ -37,6 +37,7 @@ echo "==> Checking files"
     sha256sum -c "$files"/openssl-1.0.2q.tar.gz.sha256
     sha256sum -c "$files"/ruby-1.9.3-p551.tar.gz.sha256
     sha256sum -c "$files"/libevent-2.1.10-stable.tar.gz.sha256
+    sha256sum -c "$files"/python-2.7.18.tar.gz.sha256
     sha256sum -c "$files"/llvm-3.3.src.tar.gz.sha256
     sha256sum -c "$files"/llvm-3.5.2.src.tar.xz.sha256
     sha256sum -c "$files"/llvm-3.9.1.src.tar.xz.sha256
@@ -90,6 +91,19 @@ test -d "$src"/libevent-2.1.10-stable || (
 )
 
 mv -n "$buildroot"/lib/libevent.so.disabled "$buildroot"/lib/libevent.so || true
+
+echo "==> Installing Python 2"
+test -d "$src/Python-2.7.18" || (
+    cd "$src"
+
+    tar xzf "$downloads/python-2.7.18.tar.gz"
+
+    cd "Python-2.7.18"
+
+    maybe_with_old_cc_cxx ./configure --prefix="$buildroot" --enable-shared
+    make "-j$(nproc --all)"
+    make install
+)
 
 echo "==> Installing LLVM 3.3"
 test -d "$src"/llvm-3.3.src || (
