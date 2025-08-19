@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -euxo pipefail
 
 # CD to the directly this file is actually in
 cd "$(dirname "$(realpath --logical "$0")")"
