@@ -10,6 +10,8 @@ intermediate compiler version to reach the latest version.
 - git
 - patch
 - which
+- awk
+- find
 - tar
 - xz
 - autoconf
