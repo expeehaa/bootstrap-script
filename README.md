@@ -21,4 +21,10 @@ intermediate compiler version to reach the latest version.
 - libyaml dev package
 - libunwind dev package
 - libgc (bdwgc) dev package
-- libevent dev package
+
+Additionally, the script compiles some dependencies that are unlikely to be available in a modern system.
+- Ruby 1.9.3
+- LLVM 3.x
+- pcl
+- libevent 2.1.10
+- openssl 1.0.2q
