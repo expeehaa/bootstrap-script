@@ -28,3 +28,8 @@ Additionally, the script compiles some dependencies that are unlikely to be avai
 - pcl
 - libevent 2.1.10
 - openssl 1.0.2q
+
+Some dependencies do not compile with the most recent versions of GCC.
+Alternative executables for the C and C++ compiler for the affected older dependencies can be defined in the environment variables `BOOTSTRAP_OLD_CC` and `BOOTSTRAP_OLD_CXX`, respectively.
+They will overwrite the environment variables `CC` and `CXX`.
+Compilation using GCC 7 or 10 has been confirmed to succeed.

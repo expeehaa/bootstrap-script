@@ -20,6 +20,13 @@ export LLVM_CONFIG="$buildroot"/bin/llvm-config
 export GEM_HOME="$buildroot"/lib/ruby/gems/1.9.1
 export CRYSTAL_CACHE_DIR=".crystal"
 
+maybe_with_old_cc_cxx() {
+    [[ -z "${BOOTSTRAP_OLD_CC+x}"  ]] || export CC="$BOOTSTRAP_OLD_CC"
+    [[ -z "${BOOTSTRAP_OLD_CXX+x}" ]] || export CXX="$BOOTSTRAP_OLD_CXX"
+
+    $@
+}
+
 test -d "$downloads" || (echo "downloads directory doesn't exist" && exit 1)
 
 echo "==> Checking files"
@@ -64,7 +71,7 @@ test -d "$src"/ruby-1.9.3-p551 || (
     cd ruby-1.9.3-p551
 
     autoconf
-    ./configure --prefix="$buildroot" --enable-shared --disable-rpath
+    maybe_with_old_cc_cxx ./configure --prefix="$buildroot" --enable-shared --disable-rpath
     make "-j$(nproc --all)"
     make install
 )
@@ -93,7 +100,7 @@ test -d "$src"/llvm-3.3.src || (
 
     cd llvm-3.3.src
 
-    CC=gcc CXX=g++ ./configure --prefix="$buildroot/llvm33" --enable-shared --enable-optimized --enable-targets="x86_64" --with-python="$(command -v python2)"
+    maybe_with_old_cc_cxx ./configure --prefix="$buildroot/llvm33" --enable-shared --enable-optimized --enable-targets="x86_64" --with-python="$(command -v python2)"
     make "-j$(nproc --all)"
     make install
 
