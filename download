@@ -5,42 +5,69 @@ set -euo pipefail
 cd "$(dirname "$(realpath --logical "$0")")"
 
 downloads="$(pwd)"/downloads
+checksums_file="$(pwd)/files/checksums.sha256"
 
-rm -Rf "$downloads"
 mkdir -p "$downloads"
 
-curl -L -o "$downloads"/openssl-1.0.2q.tar.gz https://www.openssl.org/source/old/1.0.2/openssl-1.0.2q.tar.gz
-curl -L -o "$downloads"/ruby-1.9.3-p551.tar.gz https://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz
-curl -L -o "$downloads"/libevent-2.1.10-stable.tar.gz https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
-curl -L -o "$downloads"/python-2.7.18.tar.gz https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
-curl -L -o "$downloads"/llvm-3.3.src.tar.gz https://releases.llvm.org/3.3/llvm-3.3.src.tar.gz
-curl -L -o "$downloads"/llvm-3.5.2.src.tar.xz https://releases.llvm.org/3.5.2/llvm-3.5.2.src.tar.xz
-curl -L -o "$downloads"/llvm-3.9.1.src.tar.xz https://releases.llvm.org/3.9.1/llvm-3.9.1.src.tar.xz
-curl -L -o "$downloads"/pcl-1.12.tar.gz http://www.xmailserver.org/pcl-1.12.tar.gz
-curl -L -o "$downloads"/pcre-8.45.tar.gz https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz/download
-git clone --mirror https://github.com/crystal-lang/crystal.git "$downloads"/crystal.git
+download_file() {
+    local target_file="$1"
+    local url="$2"
+
+    local subdir="$(dirname "$target_file")"
+    [[ "$subdir" != "." ]] && mkdir -p "$downloads/$subdir"
+
+    local sha256="$(grep "  ${target_file}$" "$checksums_file")"
+
+    if [[ ! -f "$downloads/$target_file" ]] || ! (cd "$downloads" && echo "$sha256" | sha256sum --strict --status -c); then
+        echo "Downloading $target_file..."
+        curl -L -o "$downloads/$target_file" "$url"
+
+        (cd "$downloads" && echo "$sha256" | sha256sum --strict -c)
+    else
+      echo "Using cached $target_file."
+    fi
+}
+
+download_git() {
+  local target_directory="$1"
+  local git_url="$2"
+
+  # TODO: Check if a repository with the correct remote already exists at target_directory and, if yes, just fetch updates.
+  rm -rf "$downloads/$target_directory"
+  git clone --mirror "$git_url" "$downloads/$target_directory"
+}
+
+download_file openssl-1.0.2q.tar.gz https://www.openssl.org/source/old/1.0.2/openssl-1.0.2q.tar.gz
+download_file ruby-1.9.3-p551.tar.gz https://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz
+download_file libevent-2.1.10-stable.tar.gz https://github.com/libevent/libevent/releases/download/release-2.1.10-stable/libevent-2.1.10-stable.tar.gz
+download_file python-2.7.18.tar.gz https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+download_file llvm-3.3.src.tar.gz https://releases.llvm.org/3.3/llvm-3.3.src.tar.gz
+download_file llvm-3.5.2.src.tar.xz https://releases.llvm.org/3.5.2/llvm-3.5.2.src.tar.xz
+download_file llvm-3.9.1.src.tar.xz https://releases.llvm.org/3.9.1/llvm-3.9.1.src.tar.xz
+download_file pcl-1.12.tar.gz http://www.xmailserver.org/pcl-1.12.tar.gz
+download_file pcre-8.45.tar.gz https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz/download
+download_git crystal.git https://github.com/crystal-lang/crystal.git
 
 # Gems
-mkdir "$downloads"/gems
-curl -L -o "$downloads"/gems/bundler-1.17.1.gem https://rubygems.org/downloads/bundler-1.17.1.gem
-git clone --mirror https://github.com/manastech/ruby-llvm.git "$downloads"/gems/ruby-llvm.git
-git clone --mirror https://github.com/ruby-prof/ruby-prof.git "$downloads"/gems/ruby-prof.git
-curl -L -o "$downloads"/gems/coveralls-0.7.0.gem https://rubygems.org/downloads/coveralls-0.7.0.gem
-curl -L -o "$downloads"/gems/diff-lcs-1.2.4.gem https://rubygems.org/downloads/diff-lcs-1.2.4.gem
-curl -L -o "$downloads"/gems/ffi-1.9.0.gem https://rubygems.org/downloads/ffi-1.9.0.gem
-curl -L -o "$downloads"/gems/json-1.7.7.gem https://rubygems.org/downloads/json-1.7.7.gem
-curl -L -o "$downloads"/gems/levenshtein-ffi-1.0.2.gem https://rubygems.org/downloads/levenshtein-ffi-1.0.2.gem
-curl -L -o "$downloads"/gems/mime-types-1.25.gem https://rubygems.org/downloads/mime-types-1.25.gem
-curl -L -o "$downloads"/gems/multi_json-1.8.0.gem https://rubygems.org/downloads/multi_json-1.8.0.gem
-curl -L -o "$downloads"/gems/rake-0.9.6.gem https://rubygems.org/downloads/rake-0.9.6.gem
-curl -L -o "$downloads"/gems/rest-client-1.6.7.gem https://rubygems.org/downloads/rest-client-1.6.7.gem
-curl -L -o "$downloads"/gems/rspec-2.14.1.gem https://rubygems.org/downloads/rspec-2.14.1.gem
-curl -L -o "$downloads"/gems/rspec-core-2.14.5.gem https://rubygems.org/downloads/rspec-core-2.14.5.gem
-curl -L -o "$downloads"/gems/rspec-expectations-2.14.2.gem https://rubygems.org/downloads/rspec-expectations-2.14.2.gem
-curl -L -o "$downloads"/gems/rspec-mocks-2.14.3.gem https://rubygems.org/downloads/rspec-mocks-2.14.3.gem
-curl -L -o "$downloads"/gems/ruby-graphviz-1.0.9.gem https://rubygems.org/downloads/ruby-graphviz-1.0.9.gem
-curl -L -o "$downloads"/gems/simplecov-0.7.1.gem https://rubygems.org/downloads/simplecov-0.7.1.gem
-curl -L -o "$downloads"/gems/simplecov-html-0.7.1.gem https://rubygems.org/downloads/simplecov-html-0.7.1.gem
-curl -L -o "$downloads"/gems/term-ansicolor-1.2.2.gem https://rubygems.org/downloads/term-ansicolor-1.2.2.gem
-curl -L -o "$downloads"/gems/thor-0.18.1.gem https://rubygems.org/downloads/thor-0.18.1.gem
-curl -L -o "$downloads"/gems/tins-0.9.0.gem https://rubygems.org/downloads/tins-0.9.0.gem
+download_file gems/bundler-1.17.1.gem https://rubygems.org/downloads/bundler-1.17.1.gem
+download_git gems/ruby-llvm.git https://github.com/manastech/ruby-llvm.git
+download_git gems/ruby-prof.git https://github.com/ruby-prof/ruby-prof.git
+download_file gems/coveralls-0.7.0.gem https://rubygems.org/downloads/coveralls-0.7.0.gem
+download_file gems/diff-lcs-1.2.4.gem https://rubygems.org/downloads/diff-lcs-1.2.4.gem
+download_file gems/ffi-1.9.0.gem https://rubygems.org/downloads/ffi-1.9.0.gem
+download_file gems/json-1.7.7.gem https://rubygems.org/downloads/json-1.7.7.gem
+download_file gems/levenshtein-ffi-1.0.2.gem https://rubygems.org/downloads/levenshtein-ffi-1.0.2.gem
+download_file gems/mime-types-1.25.gem https://rubygems.org/downloads/mime-types-1.25.gem
+download_file gems/multi_json-1.8.0.gem https://rubygems.org/downloads/multi_json-1.8.0.gem
+download_file gems/rake-0.9.6.gem https://rubygems.org/downloads/rake-0.9.6.gem
+download_file gems/rest-client-1.6.7.gem https://rubygems.org/downloads/rest-client-1.6.7.gem
+download_file gems/rspec-2.14.1.gem https://rubygems.org/downloads/rspec-2.14.1.gem
+download_file gems/rspec-core-2.14.5.gem https://rubygems.org/downloads/rspec-core-2.14.5.gem
+download_file gems/rspec-expectations-2.14.2.gem https://rubygems.org/downloads/rspec-expectations-2.14.2.gem
+download_file gems/rspec-mocks-2.14.3.gem https://rubygems.org/downloads/rspec-mocks-2.14.3.gem
+download_file gems/ruby-graphviz-1.0.9.gem https://rubygems.org/downloads/ruby-graphviz-1.0.9.gem
+download_file gems/simplecov-0.7.1.gem https://rubygems.org/downloads/simplecov-0.7.1.gem
+download_file gems/simplecov-html-0.7.1.gem https://rubygems.org/downloads/simplecov-html-0.7.1.gem
+download_file gems/term-ansicolor-1.2.2.gem https://rubygems.org/downloads/term-ansicolor-1.2.2.gem
+download_file gems/thor-0.18.1.gem https://rubygems.org/downloads/thor-0.18.1.gem
+download_file gems/tins-0.9.0.gem https://rubygems.org/downloads/tins-0.9.0.gem
