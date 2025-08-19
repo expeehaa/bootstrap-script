@@ -34,19 +34,19 @@ echo "==> Checking files"
 (
     cd "$downloads"
 
-    sha256sum -c "$files"/openssl-1.0.2q.tar.gz.sha256
-    sha256sum -c "$files"/ruby-1.9.3-p551.tar.gz.sha256
-    sha256sum -c "$files"/libevent-2.1.10-stable.tar.gz.sha256
-    sha256sum -c "$files"/python-2.7.18.tar.gz.sha256
-    sha256sum -c "$files"/llvm-3.3.src.tar.gz.sha256
-    sha256sum -c "$files"/llvm-3.5.2.src.tar.xz.sha256
-    sha256sum -c "$files"/llvm-3.9.1.src.tar.xz.sha256
-    sha256sum -c "$files"/pcl-1.12.tar.gz.sha256
-    sha256sum -c "$files"/pcre-8.45.tar.gz.sha256
+    sha256sum --strict -c "$files"/openssl-1.0.2q.tar.gz.sha256
+    sha256sum --strict -c "$files"/ruby-1.9.3-p551.tar.gz.sha256
+    sha256sum --strict -c "$files"/libevent-2.1.10-stable.tar.gz.sha256
+    sha256sum --strict -c "$files"/python-2.7.18.tar.gz.sha256
+    sha256sum --strict -c "$files"/llvm-3.3.src.tar.gz.sha256
+    sha256sum --strict -c "$files"/llvm-3.5.2.src.tar.xz.sha256
+    sha256sum --strict -c "$files"/llvm-3.9.1.src.tar.xz.sha256
+    sha256sum --strict -c "$files"/pcl-1.12.tar.gz.sha256
+    sha256sum --strict -c "$files"/pcre-8.45.tar.gz.sha256
 
     cd "$downloads"/gems
 
-    sha256sum -c "$files"/gems.sha256
+    sha256sum --strict -c "$files"/gems.sha256
 )
 
 mkdir -p "$src" "$stages"
