@@ -72,7 +72,7 @@ test -d "$src"/ruby-1.9.3-p551 || (
 
     autoconf
     maybe_with_old_cc_cxx ./configure --prefix="$buildroot" --enable-shared --disable-rpath
-    make "-j$(nproc --all)"
+    make "-j1" # There may be a concurrency issue during the build leading to flaky build results. This has not happened with just 1 job yet.
     make install
 )
 
